@@ -12,7 +12,8 @@ angular
   .module('sqlexplorerFrontendApp', [
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'ui.codemirror'
   ])
   .config(function ($routeProvider) {
     $routeProvider
