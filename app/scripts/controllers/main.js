@@ -36,5 +36,20 @@ angular.module('sqlexplorerFrontendApp')
         $scope.sql = data.result;
       });
     };
+	
+	$scope.evaluate = function(){
+		$scope.results = [];
+		$scope.error = "";
+		$scope.evaluating = true;
+		$http.post('http://amc.ig.he-arc.ch:3001/api/evaluate', {sql:$scope.sql})
+		.success(function(data){
+			console.log(data);
+			$scope.results = data;
+			if(data.error){
+				$scope.error = data.error;
+			}
+			$scope.evaluating = false;
+		});
+	};
     
   });

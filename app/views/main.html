@@ -1,2 +1,14 @@
-<button ng-click="format()">format</button>
+
+<div ng-show="error" ng-bind="error">
+</div>
+<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button> 
 <ui-codemirror ui-codemirror-opts="editorOptions" ng-model="sql"></ui-codemirror>
+
+<table>
+<tr>
+	<th ng-repeat="v in results.headers" ng-bind="v"></th>
+</tr>
+<tr ng-repeat="row in results.content | limitTo: 10">
+	<td ng-repeat="c in row track by $index" ng-bind="c"></td>
+</tr>
+</table>
