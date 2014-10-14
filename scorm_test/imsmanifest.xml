@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="LocationBarqueLaVaudoise"
+		  version="1.2"
+		  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+		  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+		  xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <organizations default="hec.unil.ch">
+    <organization identifier="hec.unil.ch" structure="hierarchical">
+      <title>LocationBarqueLaVaudoise</title>
+<item identifier="ITEM-1" identifierref="sco_target" isvisible="true" parameters="id=1">
+<title>Question 1</title>
+<adlcp:masteryscore>1</adlcp:masteryscore>
+</item>
+<item identifier="ITEM-2" identifierref="sco_target" isvisible="true" parameters="id=2">
+<title>Question 2</title>
+<adlcp:masteryscore>1</adlcp:masteryscore>
+</item>
+   </organization>
+  </organizations>
+  <resources><resource identifier="sco_target" adlcp:scormtype="sco" href="index.html" type="webcontent"><file href="index.html"/></resource></resources>
+</manifest>

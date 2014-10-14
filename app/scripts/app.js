@@ -15,16 +15,17 @@ angular
     'ngTouch',
     'ui.codemirror'
   ])
-  .config(function ($routeProvider) {
+  .config(function ($routeProvider, $sceProvider) {
+	$sceProvider.enabled(false);
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
+        templateUrl: 'http://amc.ig.he-arc.ch:3001/main.html',
         controller: 'MainCtrl'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
+      .when('/:db', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl'
+      })	  
       .otherwise({
         redirectTo: '/'
       });

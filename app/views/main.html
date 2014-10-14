@@ -1,14 +1,25 @@
 
-<div ng-show="error" ng-bind="error">
-</div>
+<div ng-show="error" ng-bind="error"></div>
+<div ng-show="results.answer" ng-bind="results.answer"></div>
+<div ng-bind="question.text"></div>
+<div >Schéma: <span ng-bind="question.schema"></span></div>
 <button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button> 
 <ui-codemirror ui-codemirror-opts="editorOptions" ng-model="sql"></ui-codemirror>
 
+
+{{results.numrows}}
+    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+        Previous
+    </button>
+    {{currentPage+1}}/{{numberOfPages()}}
+    <button ng-disabled="currentPage >= results.content.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+        Next
+    </button>
 <table>
 <tr>
 	<th ng-repeat="v in results.headers" ng-bind="v"></th>
 </tr>
-<tr ng-repeat="row in results.content | limitTo: 10">
+<tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
 	<td ng-repeat="c in row track by $index" ng-bind="c"></td>
 </tr>
 </table>
