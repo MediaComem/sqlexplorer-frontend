@@ -19,13 +19,21 @@ angular
 	$sceProvider.enabled(false);
     $routeProvider
       .when('/', {
-        templateUrl: 'http://amc.ig.he-arc.ch:3001/main.html',
+        templateUrl: 'views/main.html',
         controller: 'MainCtrl'
+      })
+	  .when('/admin/db/:db?', {
+        templateUrl: 'views/admin/database.html',
+        controller: 'AdminDatabaseCtrl'
+      })
+	  .when('/admin', {
+        templateUrl: 'views/admin/database.html',
+        controller: 'AdminDatabaseCtrl'
       })
       .when('/:db', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
-      })	  
+      })
       .otherwise({
         redirectTo: '/'
       });
