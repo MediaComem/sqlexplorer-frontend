@@ -47,7 +47,12 @@ angular
     })
     .when('/:db', {
       templateUrl: 'views/main.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      resolve: {
+        'admin': function(){
+          return false;
+        }
+      }
     })
     .otherwise({
       redirectTo: '/'

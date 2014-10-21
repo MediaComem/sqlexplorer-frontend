@@ -1,6 +1,27 @@
 <h1><span>SQL</span> Explorer</h1>
-<button>Create Database</button>
+
 <div>
   <div ng-repeat="d in dbs">{{d.OWNER}} ({{d.TABLECOUNT}}) edit</div>
 </div>
+
+<label>Create Database</label>
+<input ng-model="dbname"></input>
+<pre>
+CREATE USER {{dbname|uppercase}} IDENTIFIED BY {{dbname|uppercase}}
+DEFAULT TABLESPACE USERS
+QUOTA 500M ON USERS
+TEMPORARY TABLESPACE TEMP
+ACCOUNT LOCK;
+
+ALTER SESSION SET CURRENT_SCHEMA = {{dbname|uppercase}};
+
+-- DDL AND DML
+
+BEGIN
+   FOR R IN (SELECT owner, table_name FROM all_tables WHERE owner='{{dbname|uppercase}}') LOOP
+      EXECUTE IMMEDIATE 'grant select on '||R.owner||'.'||R.table_name||' to SQLEXPLORER';
+   END LOOP;
+END;
+</pre>
+
   
