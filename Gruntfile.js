@@ -327,7 +327,16 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
-      }
+      },
+	  deploy:{
+          expand: true,
+          dot: true,
+          cwd: '<%= yeoman.dist %>',
+          dest: '\\\\amc.ig.he-arc.ch\\boris\\sqlexplorer-backend\\public',
+          src: [
+            '**'
+          ]
+        }
     },
 
     // Run some tasks in parallel to speed up the build process
@@ -402,7 +411,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
-    'build'
+    //'test',
+    'build',
+	'copy:deploy'
   ]);
 };

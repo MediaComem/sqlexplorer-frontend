@@ -15,7 +15,7 @@ angular
     'ngTouch',
     'ui.codemirror'
   ])
-  .constant('BASE_URL', 'http://amc.ig.he-arc.ch:3001')
+  .constant('BASE_URL', 'https://amc.ig.he-arc.ch/sqlexplorer')
   .config(function ($routeProvider, $sceProvider) {
 	$sceProvider.enabled(false);
     $routeProvider

@@ -1,35 +1,39 @@
-
-<div ng-show="error" ng-bind="error"></div>
-<div ng-show="results.answer" ng-bind="results.answer"></div>
-<div ng-if="!admin" ng-bind="question.text"></div>
-<textarea ng-if="admin" ng-model="question.text"></textarea>
-<div >Schéma: <span ng-bind="question.schema"></span></div>
-<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button>
-<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
-  <button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
+<div class="question">
+	<div ng-show="error" ng-bind="error"></div>
+	<div ng-show="results.answer" ng-bind="results.answer"></div>
+	<div ng-if="!admin" ng-bind="question.text"></div>
+	<textarea ng-if="admin" ng-model="question.text"></textarea>
+	<div >Schéma: <span ng-bind="question.schema"></span></div>
+	<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button>
+	<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
+		<button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
+</div>
 <ui-codemirror ui-codemirror-opts="editorOptions" ng-model="sql"></ui-codemirror>
 
 
 <div ng-show="results.numrows">
-  <div>
-  {{results.numrows}}
-      <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+	<div>
+		{{results.numrows}}
+		<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
           Previous
-      </button>
-      {{currentPage+1}}/{{numberOfPages()}}
-      <button ng-disabled="currentPage >= results.content.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+		</button>
+		{{currentPage+1}}/{{numberOfPages()}}
+		<button ng-disabled="currentPage >= results.content.length/pageSize - 1" ng-click="currentPage=currentPage+1">
           Next
-      </button>
-  </div>
-  <table>
-  <tr>
-    <th ng-repeat="v in results.headers" ng-bind="v"></th>
-  </tr>
-  <tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
-    <td ng-repeat="c in row track by $index" ng-bind="c" ng-class="{'right': isNum(c)}"></td>
-  </tr>
-  </table>
+		</button>
+	</div>
+	<div class="output-box">
+	  <table class="output">
+	  <tr>
+		<th ng-repeat="v in results.headers" ng-bind="v"></th>
+	  </tr>
+	  <tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
+		<td ng-repeat="c in row track by $index" ng-bind="c" ng-class="{'right': isNum(c) || isNull(c)}"></td>
+	  </tr>
+	  </table>
+	</div>
 </div>
-<div>
-  <div ng-repeat="r in history" ng-bind="r.sql" ng-class="{'error': r.success}"></div>
+
+<div class="history">
+	<div ng-repeat="r in history" ng-bind="r.sql" ng-class="{'error': r.success}"></div>
 </div>

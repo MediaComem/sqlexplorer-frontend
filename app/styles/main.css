@@ -1,4 +1,4 @@
-p, button, input, textarea, h1, h2, h3, h4 {
+p, button, input, textarea, h1, h2, h3, h4, .history, .question{
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -8,4 +8,18 @@ p, button, input, textarea, h1, h2, h3, h4 {
 
 textarea{
   width: 100%;
+}
+
+.output, .CodeMirror, pre{
+	font-family: 'Source Code Pro', monospace;
+}
+
+.output-box{
+	width: 100%;
+	overflow: auto;
+}
+
+.output th, .output td{
+	padding-right: 20px;
+	white-space: nowrap;
 }
