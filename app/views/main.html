@@ -1,11 +1,12 @@
 
 <div ng-show="error" ng-bind="error"></div>
 <div ng-show="results.answer" ng-bind="results.answer"></div>
-<div ng-bind="question.text"></div>
-<textarea ng-model="question.text"></textarea>
+<div ng-if="!admin" ng-bind="question.text"></div>
+<textarea ng-if="admin" ng-model="question.text"></textarea>
 <div >Schéma: <span ng-bind="question.schema"></span></div>
 <button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button>
-admin: <button>create</button> <button>update</button>
+<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
+  <button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
 <ui-codemirror ui-codemirror-opts="editorOptions" ng-model="sql"></ui-codemirror>
 
 

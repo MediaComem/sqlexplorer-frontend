@@ -23,7 +23,7 @@ angular.module('sqlexplorerFrontendApp')
 });
  
 angular.module('sqlexplorerFrontendApp')
-.controller('MainCtrl', function ($scope, $http, $routeParams, $window, $q, $timeout, admin, BASE_URL) {
+.controller('MainCtrl', function ($scope, $http, $routeParams, $location, $window, $q, $timeout, admin, BASE_URL) {
     
   $scope.history = [];
 	$scope.currentPage = 0;
@@ -56,10 +56,18 @@ angular.module('sqlexplorerFrontendApp')
 	
 	if($routeParams.id){
 		$scope.questionId = $routeParams.id;
-		$http.get(BASE_URL + '/api/questiontext/' + $scope.questionId)
+    //IF admin get answer
+    var url = '/api/questiontext/';
+    if($scope.admin){
+      url = '/api/question/';
+    }
+		$http.get(BASE_URL + url + $scope.questionId)
 		.success(function(question){
 			$scope.db = question.db_schema;
 			$scope.question = question;
+      if(question.sql){
+        $scope.sql = question.sql;
+      }
 		})
 		.error(function(err){
 			//TODO: handle failure
@@ -68,6 +76,7 @@ angular.module('sqlexplorerFrontendApp')
 	}
     
   $scope.sql = 'SELECT *\nFROM employees';
+  $scope.question = {};
     
   $scope.format = function(){
     $http.post('http://sqlformat.org/api/v1/format', {
@@ -120,6 +129,26 @@ angular.module('sqlexplorerFrontendApp')
       }
     });
 	};
+  
+  $scope.upsert = function(){
+    var question = {sql:$scope.sql, text:$scope.question.text, db_schema: $scope.db};
+    if($scope.question.id){
+      question.id = $scope.question.id;
+    }
+    $http.post(BASE_URL + '/api/question', question, {cache: false})
+		.success(function(data){
+			$scope.evaluating = false;
+      $location.search('id', data.id);
+		})
+    .error(function(data){
+      $scope.evaluating = false;
+    });
+  
+  };
+  
+  $scope.navToNewQuestion = function(){
+    $location.search('id', undefined);
+  };
   
   $scope.isNum = function(a){
     return !isNaN(a);
