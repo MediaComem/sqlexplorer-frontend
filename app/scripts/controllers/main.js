@@ -34,7 +34,7 @@ angular.module('sqlexplorerFrontendApp')
   
     $scope.editorOptions = {
     lineNumbers: true,
-    mode:  'text/x-plsql',
+    mode:  'text/x-oracle',
     theme: 'neat',
     matchBrackets: true,
     extraKeys: {
@@ -78,7 +78,7 @@ angular.module('sqlexplorerFrontendApp')
   $scope.question = {};
     
   $scope.format = function(){
-    $http.post('http://sqlformat.org/api/v1/format', {
+    $http.post('https://amc.ig.he-arc.ch/sqlformat/api/v1/format', {
       sql: $scope.sql,
       reindent: 1,
       keyword_case: 'upper'
