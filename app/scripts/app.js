@@ -13,7 +13,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.codemirror'
+    'ui.codemirror',
+    'LocalStorageModule'
   ])
   .constant('BASE_URL', 'https://amc.ig.he-arc.ch/sqlexplorer')
   .config(function ($routeProvider, $sceProvider) {

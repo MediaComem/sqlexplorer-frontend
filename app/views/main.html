@@ -34,7 +34,7 @@
 	</div>
 </div>
 
-<h3 ng-click="historyLimit = ! historyLimit" >History</h3>
+<h3 ng-click="historyLimit = ! historyLimit" >History <span class="clearHistory" ng-click="clearHistory()">clear</span></h3>
 <div class="history" ng-class="{'limit': historyLimit}">
 	<table>
 	<tr ng-repeat="r in history" ng-class="{'error': r.success}" ng-click="question.sql = r.sql">
@@ -42,4 +42,11 @@
 		<td><pre ng-bind="r.sql"></pre></td>
 	</tr>
 	<table>
+</div>
+
+<h3>Schema</h3>
+<img ng-src="https://amc.ig.he-arc.ch/sqlexplorer/{{db}}.png" my-schema-pic />
+
+<div class="schemaPic">
+	<div ></div>
 </div>

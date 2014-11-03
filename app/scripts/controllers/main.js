@@ -23,9 +23,11 @@ angular.module('sqlexplorerFrontendApp')
 });
  
 angular.module('sqlexplorerFrontendApp')
-.controller('MainCtrl', function ($scope, $http, $routeParams, $location, $window, $q, $timeout, admin, BASE_URL) {
+.controller('MainCtrl', function ($scope, $http, $routeParams, $location, $window, $q,
+             $timeout, localStorageService, admin, BASE_URL) {
     
     $scope.history = [];
+    $scope.historyLimit = true;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     $scope.numberOfPages = function(){
@@ -46,7 +48,8 @@ angular.module('sqlexplorerFrontendApp')
   
     $scope.admin = admin;
     if($routeParams.db){
-        $scope.db = $routeParams.db;
+        $scope.db = $routeParams.db.toUpperCase();
+        $scope.history = localStorageService.get($scope.db) || [];
     }
     var search = $window.location.search.split('=');
     if(search.length > 1){
@@ -104,6 +107,10 @@ angular.module('sqlexplorerFrontendApp')
         $scope.evaluating = true;
         var history = {sql: $scope.question.sql, result: ''};
         $scope.history.unshift(history);
+
+        //could be moved to watch
+        localStorageService.set($scope.db, $scope.history);
+        
         $timeout(function(){
           timedOut = true;
           timeout.resolve();
@@ -162,6 +169,9 @@ angular.module('sqlexplorerFrontendApp')
     return a === '(NULL)';
   };
   
-  //restore from history
+  $scope.clearHistory = function(){
+    localStorageService.remove($scope.db);
+    $scope.history = [];
+  };
     
 });

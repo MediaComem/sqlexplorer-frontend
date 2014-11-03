@@ -2,6 +2,20 @@ p, button, input, textarea, h1, h2, h3, h4, .history, .question{
 	font-family: 'Roboto', sans-serif;
 }
 
+button {
+	border: none;
+	outline: none;	
+	color: #006AC3;
+  	background-color: #F0EEEE;
+	padding: 5px;
+  	border: solid #006AC3 1px;
+  	text-decoration: none;
+}
+
+button:hover{
+	background-color: #F0EEEE;
+}
+
 .right{
   text-align: right;
 }
@@ -36,6 +50,10 @@ textarea{
 	font-family: 'Source Code Pro', monospace;
 }
 
+.output tr:hover td{
+	background-color: #ffffb2;
+}
+
 .output-box{
 	width: 100%;
 	overflow: auto;
@@ -44,7 +62,8 @@ textarea{
 
 .error {
 	background-color: #FF4136;
-	color: #fff;	
+	color: #fff;
+	padding: 2px;
 }
 
 
@@ -74,3 +93,49 @@ textarea{
 .history.limit tr:nth-child(n+5){
 	display: none;
 }
+
+.clearHistory{
+	background-color: #FFF;
+	color: #fff;
+	padding: 2px;
+	font-size: 60%;
+	vertical-align: top;
+	cursor: pointer;
+}
+.clearHistory:hover{
+	background-color: #FF4136;
+	color: #fff;
+}
+
+
+.CodeMirror {
+  border: 1px solid #eee;
+}
+
+
+.ui-wrapper {
+	
+}
+.ui-wrapper input, .ui-wrapper textarea { border: 0; }
+
+
+.ui-resizable-s { cursor: s-resize; height: 6px; width: 100%; bottom: 0px; left: 0px; background: transparent url('../img/ui/resizable-s.gif') repeat scroll center top; }
+.ui-resizable-n { cursor: n-resize;}
+.ui-resizable-e { cursor: e-resize;}
+.ui-resizable-w { cursor: w-resize;}
+.ui-resizable-se { cursor: se-resize;}
+.ui-resizable-sw { cursor: sw-resize;}
+.ui-resizable-nw { cursor: nw-resize;}
+.ui-resizable-ne { cursor: ne-resize;}
+
+.ui-resizable { position: relative;}
+.ui-resizable-handle { position: absolute;font-size: 0.1px; display: block;}
+.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
+/* knobHandles using CSS */
+
+.ui-wrapper .ui-resizable-handle { width: 8px; height: 8px; border: 1px solid rgb(128, 128, 128); background: rgb(242, 242, 242); background-image: none; }
+.ui-wrapper .ui-resizable-n, .ui-wrapper .ui-resizable-s { left: 50%; margin-left: -5px;}
+.ui-wrapper .ui-resizable-e, .ui-wrapper .ui-resizable-w { top: 50%; margin-top: -5px;}
+.ui-wrapper .ui-resizable-ne, .ui-wrapper .ui-resizable-n, .ui-wrapper .ui-resizable-nw { top: 0;}
+.ui-wrapper .ui-resizable-se, .ui-wrapper .ui-resizable-s, .ui-wrapper .ui-resizable-sw { bottom: 0;}
+.ui-wrapper .ui-resizable-ne, .ui-wrapper .ui-resizable-e, .ui-wrapper .ui-resizable-se { right: 0; }
