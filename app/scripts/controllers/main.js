@@ -105,11 +105,6 @@ angular.module('sqlexplorerFrontendApp')
         $scope.results = [];
         $scope.error = '';
         $scope.evaluating = true;
-        var history = {sql: $scope.question.sql, result: ''};
-        $scope.history.unshift(history);
-
-        //could be moved to watch
-        localStorageService.set($scope.db, $scope.history);
         
         $timeout(function(){
           timedOut = true;
@@ -123,12 +118,21 @@ angular.module('sqlexplorerFrontendApp')
         
         $http.post(BASE_URL + '/api/evaluate', data, {cache: false, timeout: timeout.promise})
         .success(function(data){
+            var history = {sql: $scope.question.sql, result: ''};
             $scope.results = data;
             if(data.error){
                 $scope.error = data.error;
-                history = data.error;
+                history.error = data.error;
+            }else{
+              history.result = data.numrows
             }
             $scope.evaluating = false;
+
+            $scope.history.unshift(history);
+
+            //could be moved to watch
+            localStorageService.set($scope.db, $scope.history);
+        
         })
         .error(function(data){
           if (timedOut) {

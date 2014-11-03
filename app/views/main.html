@@ -37,9 +37,9 @@
 <h3 ng-click="historyLimit = ! historyLimit" >History <span class="clearHistory" ng-click="clearHistory()">clear</span></h3>
 <div class="history" ng-class="{'limit': historyLimit}">
 	<table>
-	<tr ng-repeat="r in history" ng-class="{'error': r.success}" ng-click="question.sql = r.sql">
+	<tr ng-repeat="r in history" ng-class="{'error': r.error}" ng-click="question.sql = r.sql">
 		<td ng-bind="history.length - $index"></td>
-		<td><pre ng-bind="r.sql"></pre></td>
+		<td><pre ng-bind="r.sql" title="{{r.result || r.error}}"></pre></td>
 	</tr>
 	<table>
 </div>
