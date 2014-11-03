@@ -1,14 +1,14 @@
 <div class="question">
-	<div ng-show="error" ng-bind="error"></div>
+	<div ng-show="error" ng-bind="error" class="error"></div>
 	<div ng-show="results.answer" ng-bind="results.answer"></div>
 	<div ng-if="!admin" ng-bind="question.text"></div>
 	<textarea ng-if="admin" ng-model="question.text"></textarea>
-	<div >Schéma: <span ng-bind="question.schema"></span></div>
+	<div ng-if="question.text">Schéma: <span ng-bind="question.schema"></span></div>
 	<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button>
 	<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
 		<button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
 </div>
-<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="sql"></ui-codemirror>
+<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="question.sql"></ui-codemirror>
 
 
 <div ng-show="results.numrows">
@@ -34,6 +34,12 @@
 	</div>
 </div>
 
-<div class="history">
-	<div ng-repeat="r in history" ng-bind="r.sql" ng-class="{'error': r.success}"></div>
+<h3 ng-click="historyLimit = ! historyLimit" >History</h3>
+<div class="history" ng-class="{'limit': historyLimit}">
+	<table>
+	<tr ng-repeat="r in history" ng-class="{'error': r.success}" ng-click="question.sql = r.sql">
+		<td ng-bind="history.length - $index"></td>
+		<td><pre ng-bind="r.sql"></pre></td>
+	</tr>
+	<table>
 </div>

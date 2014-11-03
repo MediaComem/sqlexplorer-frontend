@@ -64,9 +64,6 @@ angular.module('sqlexplorerFrontendApp')
         .success(function(question){
             $scope.db = question.db_schema;
             $scope.question = question;
-            if(question.sql){
-                $scope.sql = question.sql;
-            }
         })
         .error(function(err){
             //TODO: handle failure
@@ -74,12 +71,13 @@ angular.module('sqlexplorerFrontendApp')
         });
     }
     
-  $scope.sql = 'SELECT *\nFROM employees';
-  $scope.question = {};
+  $scope.question = {
+    sql: ''
+  };
     
   $scope.format = function(){
     $http.post('https://amc.ig.he-arc.ch/sqlformat/api/v1/format', {
-      sql: $scope.sql,
+      sql: $scope.question.sql,
       reindent: 1,
       keyword_case: 'upper'
     },{
@@ -93,7 +91,7 @@ angular.module('sqlexplorerFrontendApp')
       }
     })
     .success(function(data){
-        $scope.sql = data.result;
+        $scope.question.sql = data.result;
     });
   };
     
@@ -104,21 +102,20 @@ angular.module('sqlexplorerFrontendApp')
         $scope.results = [];
         $scope.error = '';
         $scope.evaluating = true;
-        var history = {sql: $scope.sql, result: ''};
+        var history = {sql: $scope.question.sql, result: ''};
         $scope.history.unshift(history);
         $timeout(function(){
           timedOut = true;
           timeout.resolve();
         }, 10000);
         
-        var data = {sql:$scope.sql, db:$scope.db};
+        var data = {sql:$scope.question.sql, db:$scope.db};
         if($scope.questionId){
             data.id = $scope.questionId;
         }
         
         $http.post(BASE_URL + '/api/evaluate', data, {cache: false, timeout: timeout.promise})
         .success(function(data){
-            console.log(data);
             $scope.results = data;
             if(data.error){
                 $scope.error = data.error;
@@ -138,7 +135,7 @@ angular.module('sqlexplorerFrontendApp')
     };
   
   $scope.upsert = function(){
-    var question = {sql:$scope.sql, text:$scope.question.text, db_schema: $scope.db};
+    var question = {sql:$scope.question.sql, text:$scope.question.text, db_schema: $scope.db};
     if($scope.question.id){
       question.id = $scope.question.id;
     }

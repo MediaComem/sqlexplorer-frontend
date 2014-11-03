@@ -10,6 +10,28 @@ textarea{
   width: 100%;
 }
 
+.output {
+	
+}
+
+
+.output th{
+	border-left: 1px solid #333;	
+	border-right: 1px solid #333;	
+	text-align: left;
+
+}
+
+.output td{
+	border: 1px solid #ddd;	
+}
+
+.output th, .output td{
+	white-space: nowrap;
+	padding: 2px;
+}
+
+
 .output, .CodeMirror, pre{
 	font-family: 'Source Code Pro', monospace;
 }
@@ -19,7 +41,36 @@ textarea{
 	overflow: auto;
 }
 
-.output th, .output td{
-	padding-right: 20px;
-	white-space: nowrap;
+
+.error {
+	background-color: #FF4136;
+	color: #fff;	
+}
+
+
+.history table{
+	cursor: pointer;	
+	width: 100%;
+}
+
+.history td:first-child{
+	vertical-align: top;
+	padding: 1px;
+	text-align: right;
+	width: 2%;
+}
+
+.history tr{
+	border-top: 1px solid #ddd;
+	margin: 0;
+}
+
+.history pre {
+	border-left: 1px solid #ddd;
+	margin: 0;
+	padding: 1px;
+}
+
+.history.limit tr:nth-child(n+5){
+	display: none;
 }
