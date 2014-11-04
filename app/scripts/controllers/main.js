@@ -65,7 +65,7 @@ angular.module('sqlexplorerFrontendApp')
         }
         $http.get(BASE_URL + url + $scope.questionId)
         .success(function(question){
-            $scope.db = question.db_schema;
+            $scope.db = question.db_schema.toUpperCase();
             $scope.question = question;
         })
         .error(function(err){
