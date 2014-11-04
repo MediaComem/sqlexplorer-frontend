@@ -21,6 +21,23 @@ angular.module('sqlexplorerFrontendApp')
         }
     };
 });
+
+function removeNL(s) {
+  /*
+  ** Remove NewLine, CarriageReturn and Tab characters from a String
+  **   s  string to be processed
+  ** returns new string
+  */
+  var r = '';
+  for (var i=0; i < s.length; i++) {
+    if (s.charAt(i) != '\n' &&
+        s.charAt(i) != '\r' &&
+        s.charAt(i) != '\t') {
+      r += s.charAt(i);
+      }
+    }
+  return r;
+}
  
 angular.module('sqlexplorerFrontendApp')
 .controller('MainCtrl', function ($scope, $http, $routeParams, $location, $window, $q,
@@ -49,11 +66,27 @@ angular.module('sqlexplorerFrontendApp')
     $scope.admin = admin;
     if($routeParams.db){
         $scope.db = $routeParams.db.toUpperCase();
+        //todo as watch?
         $scope.history = localStorageService.get($scope.db) || [];
     }
     var search = $window.location.search.split('=');
+    //from scorm frame
     if(search.length > 1){
         $routeParams.id = search[1];
+        var start = new Date().getTime();
+        var checkScormAPI = function (){
+          if(scorm_api){
+            if(scorm_score > 0){
+              //question passed
+              $scope.passed = true;
+            }
+          } else if(new Date().getTime() - start < 3000){
+            $timeout(checkScormAPI, 200); 
+          }else{
+            alert('no scorm api connection!');
+          }
+        };
+        checkScormAPI();
     }
     
     if($routeParams.id){
@@ -66,6 +99,8 @@ angular.module('sqlexplorerFrontendApp')
         $http.get(BASE_URL + url + $scope.questionId)
         .success(function(question){
             $scope.db = question.db_schema.toUpperCase();
+            //todo as watch?
+            $scope.history = localStorageService.get($scope.db) || [];
             $scope.question = question;
         })
         .error(function(err){
@@ -115,17 +150,38 @@ angular.module('sqlexplorerFrontendApp')
         if($scope.questionId){
             data.id = $scope.questionId;
         }
+        if(scorm_api){
+          data.user_id = doLMSGetValue('cmi.core.student_id');
+          data.user_name = doLMSGetValue('cmi.core.student_name');
+        }
         
         $http.post(BASE_URL + '/api/evaluate', data, {cache: false, timeout: timeout.promise})
         .success(function(data){
-            var history = {sql: $scope.question.sql, result: ''};
+            var history = {sql: $scope.question.sql};
             $scope.results = data;
             if(data.error){
                 $scope.error = data.error;
                 history.error = data.error;
-            }else{
-              history.result = data.numrows
             }
+            if(data.hasOwnProperty('numrows')){
+                history.result = data.numrows;
+            }
+            if(scorm_api){
+              //save interaction only has a range from 0-255
+              doLMSSetValue('cmi.interactions.'+ 0 +'.student_response', removeNL(history.sql).substring(0,255));
+              doLMSSetValue('cmi.interactions.'+ 0 +'.result', data.correct ? 'correct' : 'wrong');
+              if(data.correct){
+                  doLMSSetValue('cmi.core.score.raw', 1);
+                  doLMSSetValue('cmi.core.lesson_status','passed');
+                  //questionPassed
+                  $scope.passed = {sql: history.sql, answer: data.answer};
+              }else{
+                  doLMSSetValue('cmi.core.score.raw', 0);
+                  doLMSSetValue('cmi.core.lesson_status','failed');
+              }
+            }
+
+
             $scope.evaluating = false;
 
             $scope.history.unshift(history);

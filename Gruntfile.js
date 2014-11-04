@@ -278,6 +278,17 @@ module.exports = function (grunt) {
         }]
       }
     },
+    
+    processhtml: {
+      options: {
+        commentMarker: 'process'
+      },
+      dist: {
+        files: {
+          '<%= yeoman.dist %>/index.html':'<%= yeoman.dist %>/index.html'
+        }
+      }
+    },
 
     // ng-annotate tries to make the code safe for minification automatically
     // by using the Angular long form for dependency injection.
@@ -406,6 +417,7 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
+    'processhtml',
     'htmlmin'
   ]);
 

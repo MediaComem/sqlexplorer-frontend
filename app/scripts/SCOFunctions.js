@@ -44,6 +44,7 @@
 var startDate;
 var exitPageStatus;
 var scorm_api = false;
+var scorm_score = 0;
 function loadPage()
 {
    var result = doLMSInitialize();
@@ -57,15 +58,14 @@ function loadPage()
 		  doLMSSetValue( "cmi.core.lesson_status", "incomplete" );
 	   } else{
 			if(status == "passed"){
-				var score = doLMSGetValue("cmi.core.score.raw");
-				if(score > 0){
-					//questionPassed();
-				}
+				scorm_score = doLMSGetValue("cmi.core.score.raw");
 			}
+			/*
 			if(typeof window.addSqlHistory == 'function') {
 				addSqlHistory(unescape(doLMSGetValue("cmi.suspend_data")));
 				showHistory();
 			}
+			*/
 	   }
 	   exitPageStatus = false;
 	   startTimer();
@@ -178,7 +178,7 @@ function unloadPage()
 {
 	if (exitPageStatus != true)
 	{
-		//doLMSSetValue("cmi.suspend_data", escape($("#history > tr > td > * > pre:first").text()).substring(0,4096));
+		doLMSSetValue("cmi.suspend_data", escape($('.history tr:first-child > td + td').text()).substring(0,4096));
 		doQuit();
 	}
 

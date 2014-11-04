@@ -1,3 +1,7 @@
+body {
+	background-color: #fff;	
+}
+
 p, button, input, textarea, h1, h2, h3, h4, .history, .question{
 	font-family: 'Roboto', sans-serif;
 }

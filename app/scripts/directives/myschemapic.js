@@ -13,7 +13,7 @@ angular.module('sqlexplorerFrontendApp')
       link: function postLink(scope, element, attrs) {
         element
         .one('load', function(){
-			$(this).resizable({
+			element.resizable({
  				handles: "all",
 	 			aspectRatio: true, 
 	 			autoHide: true,

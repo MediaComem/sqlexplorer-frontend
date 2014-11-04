@@ -20,15 +20,6 @@ angular
   .config(function ($routeProvider, $sceProvider) {
 	$sceProvider.enabled(false);
     $routeProvider
-    .when('/', {
-      templateUrl: 'views/main.html',
-      controller: 'MainCtrl',
-      resolve: {
-        'admin': function(){
-          return false;
-        }
-      }
-    })
     .when('/admin/db/:db?', {
       templateUrl: 'views/admin/database.html',
       controller: 'AdminDatabaseCtrl'
@@ -56,6 +47,6 @@ angular
       }
     })
     .otherwise({
-      redirectTo: '/'
+      redirectTo: '/HR'
     });
   });

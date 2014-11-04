@@ -4,11 +4,22 @@
 	<div ng-if="!admin" ng-bind="question.text"></div>
 	<textarea ng-if="admin" ng-model="question.text"></textarea>
 	<div ng-if="question.text">Schéma: <span ng-bind="question.schema"></span></div>
-	<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating">execute</button>
+	<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating || passed">execute</button>
 	<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
 		<button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
 </div>
-<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="question.sql"></ui-codemirror>
+<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="question.sql" ng-hide="passed"></ui-codemirror>
+<div ng-if="passed">
+	<h2>Question terminée<h2>
+	<div ng-if="passed.sql">
+		<h3>Votre réponse</h3>
+		<pre ng-bind="passed.sql"></pre>
+		<h3>La réponse</h3>
+		<pre ng-bind="passed.answer"></pre>
+		<a href="mailto:boris.fritscher@he-arc.ch">Signaler une erreure.</a>
+	</div>
+
+</div>
 
 
 <div ng-show="results.numrows">
@@ -37,7 +48,7 @@
 <h3 ng-click="historyLimit = ! historyLimit" >History <span class="clearHistory" ng-click="clearHistory()">clear</span></h3>
 <div class="history" ng-class="{'limit': historyLimit}">
 	<table>
-	<tr ng-repeat="r in history" ng-class="{'error': r.error}" ng-click="question.sql = r.sql">
+	<tr ng-repeat="r in history" ng-class="{'error': !(r.result >=0)}" ng-click="question.sql = r.sql">
 		<td ng-bind="history.length - $index"></td>
 		<td><pre ng-bind="r.sql" title="{{r.result || r.error}}"></pre></td>
 	</tr>
