@@ -28,6 +28,10 @@ angular
       templateUrl: 'views/admin/database.html',
       controller: 'AdminDatabaseCtrl'
     })
+    .when('/admin/logs', {
+      templateUrl: 'views/admin/logs.html',
+      controller: 'AdminLogsCtrl'
+    })
     .when('/admin/:db', {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl',

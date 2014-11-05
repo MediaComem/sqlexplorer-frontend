@@ -1,0 +1,16 @@
+<div class="question" ng-repeat="a in log">
+<h4>{{a.activity}} : {{a.question_id}} ({{a.attempts.length}})</h4>
+    <div class="attempt" ng-repeat="attempt in a.attempts">
+        {{attempt.created}} {{attempt.ip}}
+        <pre ng-bind="attempt.query" title="{{attempt.error}}"></pre>
+    </div>
+</div>
+<div class="log" ng-repeat="log in logs">
+    <h3 ng-bind="log.user_name" ng-click="getLogDetail(log.user_id)"></h3>
+    <div ng-repeat="activity in log.activities">
+        <h4 ng-bind="activity.name"></h4>
+        <div ng-repeat="question in activity.questions">
+            {{question.id}} ({{question.count}})
+        </div>
+    </div>
+</div>
