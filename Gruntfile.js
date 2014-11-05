@@ -415,7 +415,7 @@ module.exports = function (grunt) {
     'cdnify',
     'cssmin',
     'uglify',
-    'filerev',
+    //'filerev',
     'usemin',
     'processhtml',
     'htmlmin'
@@ -425,6 +425,6 @@ module.exports = function (grunt) {
     'newer:jshint',
     //'test',
     'build',
-	'copy:deploy'
+	  'copy:deploy'
   ]);
 };

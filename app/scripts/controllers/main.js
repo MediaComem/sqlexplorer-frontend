@@ -30,9 +30,9 @@ function removeNL(s) {
   */
   var r = '';
   for (var i=0; i < s.length; i++) {
-    if (s.charAt(i) != '\n' &&
-        s.charAt(i) != '\r' &&
-        s.charAt(i) != '\t') {
+    if (s.charAt(i) !== '\n' &&
+        s.charAt(i) !== '\r' &&
+        s.charAt(i) !== '\t') {
       r += s.charAt(i);
       }
     }
@@ -72,7 +72,13 @@ angular.module('sqlexplorerFrontendApp')
     var search = $window.location.search.split('=');
     //from scorm frame
     if(search.length > 1){
-        $routeParams.id = search[1];
+        if(isNaN(search[1])){
+          $scope.db = search[1].toUpperCase();
+          //todo as watch?
+          $scope.history = localStorageService.get($scope.db) || [];
+        }else{
+          $routeParams.id = search[1];
+        }
         var start = new Date().getTime();
         var checkScormAPI = function (){
           if(scorm_api){
