@@ -143,3 +143,32 @@ textarea{
 .ui-wrapper .ui-resizable-ne, .ui-wrapper .ui-resizable-n, .ui-wrapper .ui-resizable-nw { top: 0;}
 .ui-wrapper .ui-resizable-se, .ui-wrapper .ui-resizable-s, .ui-wrapper .ui-resizable-sw { bottom: 0;}
 .ui-wrapper .ui-resizable-ne, .ui-wrapper .ui-resizable-e, .ui-wrapper .ui-resizable-se { right: 0; }
+
+.db{
+	display: inline-block;
+	width: 300px;
+	height: 150px;
+	background-position: 50% 50%;
+	background-size: contain;
+	margin: 5px;
+}
+
+.db a{
+	display: block;
+	background-color: rgba(200, 200, 200, 0.8);
+	padding:3px;
+	text-decoration: none;
+}
+
+.keywords .keyword{
+	float: left;
+	margin: 3px;
+}
+
+.keywords .keyword.active{
+	font-weight: bold;	
+}
+
+.clear{
+	clear: both;	
+}

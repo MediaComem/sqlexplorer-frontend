@@ -32,6 +32,10 @@ angular
       templateUrl: 'views/admin/logs.html',
       controller: 'AdminLogsCtrl'
     })
+    .when('/admin/questions', {
+      templateUrl: 'views/admin/questions.html',
+      controller: 'AdminQuestionsCtrl'
+    })
     .when('/admin/:db', {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl',

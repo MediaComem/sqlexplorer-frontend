@@ -1,0 +1,14 @@
+<div class="keywords">
+    <div ng-bind="tag.name" ng-repeat="tag in tags" class="keyword" ng-class="{'active': isKeywordSelected(tag.name)}" ng-click="toggleKeyword(tag.name)"></div>
+</div>
+<label>AND <input type="radio" name="andor" value="0" ng-model="keywordInclusive" /></label>
+<label>OR <input type="radio" name="andor" value="1" ng-model="keywordInclusive" /></label>
+
+<h3 class="clear">Questions ({{questions.length}})</h3>
+<div>
+<div ng-repeat="question in questions">
+{{question.id}}
+{{question.text}}
+<pre>{{question.sql}}</pre>
+</div>
+</div>

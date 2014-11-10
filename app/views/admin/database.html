@@ -1,7 +1,9 @@
 <h1><span>SQL</span> Explorer</h1>
 
 <div>
-  <div ng-repeat="d in dbs"><a href="#/admin/{{d.OWNER}}">{{d.OWNER}}</a> ({{d.TABLECOUNT}}) edit</div>
+  <div ng-repeat="d in dbs" class="db" ng-style="{'background-image': 'url(https://amc.ig.he-arc.ch/sqlexplorer/' + d.OWNER + '.png)'}">
+      <a href="#/admin/{{d.OWNER}}">{{d.OWNER}}</a> ({{d.TABLECOUNT}}) edit
+  </div>
 </div>
 
 <label>Create Database</label>
