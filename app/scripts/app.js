@@ -32,7 +32,7 @@ angular
       templateUrl: 'views/admin/logs.html',
       controller: 'AdminLogsCtrl'
     })
-    .when('/admin/questions', {
+    .when('/admin/questions/:db?', {
       templateUrl: 'views/admin/questions.html',
       controller: 'AdminQuestionsCtrl'
     })

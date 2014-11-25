@@ -144,20 +144,61 @@ textarea{
 .ui-wrapper .ui-resizable-se, .ui-wrapper .ui-resizable-s, .ui-wrapper .ui-resizable-sw { bottom: 0;}
 .ui-wrapper .ui-resizable-ne, .ui-wrapper .ui-resizable-e, .ui-wrapper .ui-resizable-se { right: 0; }
 
-.db{
+a.db{
 	display: inline-block;
 	width: 300px;
 	height: 150px;
 	background-position: 50% 50%;
 	background-size: contain;
 	margin: 5px;
+  text-decoration: none;
+  color: #333;
+  text-align: right;
 }
 
-.db a{
+.db > div{
 	display: block;
 	background-color: rgba(200, 200, 200, 0.8);
 	padding:3px;
 	text-decoration: none;
+  font-weight: bold;
+  text-align: left;
+}
+
+.log h3{
+  margin: 20px 0 0 0;
+  padding: 0;
+}
+
+.log h4{
+  margin: 0;
+  padding: 0;
+}
+
+.attempt{
+  margin-left: 25px;
+  font-style: italic;
+}
+.attempt pre{
+  margin: 0 0 10px 25px;
+  padding: 0;
+  font-style: normal;
+}
+
+.activity{
+  margin-left: 25px;
+}
+
+.activity_question{
+  margin-left: 25px;
+}
+
+.question{
+  margin-bottom: 40px;
+}
+
+.question > span {
+  font-style: italic;
 }
 
 .keywords .keyword{

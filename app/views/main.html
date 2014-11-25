@@ -1,6 +1,5 @@
 <div class="question">
 	<div ng-show="error" ng-bind="error" class="error"></div>
-	<div ng-show="results.answer" ng-bind="results.answer"></div>
 	<div ng-if="!admin" ng-bind="question.text"></div>
 	<textarea ng-if="admin" ng-model="question.text"></textarea>
 	<div ng-if="question.text">Schéma: <span ng-bind="question.schema"></span></div>
@@ -61,3 +60,5 @@
 <div class="schemaPic">
 	<div ></div>
 </div>
+
+<div id="questionId" ng-bind="questionId"></div>

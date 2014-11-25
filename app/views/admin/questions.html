@@ -1,14 +1,19 @@
 <div class="keywords">
     <div ng-bind="tag.name" ng-repeat="tag in tags" class="keyword" ng-class="{'active': isKeywordSelected(tag.name)}" ng-click="toggleKeyword(tag.name)"></div>
 </div>
-<label>AND <input type="radio" name="andor" value="0" ng-model="keywordInclusive" /></label>
-<label>OR <input type="radio" name="andor" value="1" ng-model="keywordInclusive" /></label>
+<div class="clear">
+  <strong>Matching:</strong>
+  <label>AND <input type="radio" name="andor" value="0" ng-model="keywordInclusive" /></label>
+  <label>OR <input type="radio" name="andor" value="1" ng-model="keywordInclusive" /></label>
+  <label><strong>database:</strong> <select ng-model="dbname" ng-options="d.OWNER as d.OWNER for d in dbs"></select></label>
+  <a ng-show="dbname != 'ALL'" ng-href="#/admin/{{dbname}}">NEW</a>
+</div>
 
 <h3 class="clear">Questions ({{questions.length}})</h3>
 <div>
-<div ng-repeat="question in questions">
-{{question.id}}
-{{question.text}}
+<div ng-repeat="question in questions" class="question">
+<a ng-href="#/{{question.db_schema}}/?id={{question.id}}">#{{question.id}}</a>
+<span>{{question.text}} </span>
 <pre>{{question.sql}}</pre>
 </div>
 </div>

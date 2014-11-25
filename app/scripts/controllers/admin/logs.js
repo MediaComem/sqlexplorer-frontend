@@ -9,7 +9,11 @@
  */
 angular.module('sqlexplorerFrontendApp')
   .controller('AdminLogsCtrl', function ($scope, $http, BASE_URL) {
-      $http.get(BASE_URL + '/api/logs')
+      $http({
+        url: BASE_URL + '/api/logs',
+        method: 'GET',
+        withCredentials: true
+      })
       .success(function(logs){
           $scope.logs = logs;
       })
@@ -20,7 +24,11 @@ angular.module('sqlexplorerFrontendApp')
 
 
       $scope.getLogDetail = function(user_id){
-        $http.get(BASE_URL + '/api/logs/' + user_id)
+        $http({
+          url: BASE_URL + '/api/logs/' + user_id,
+          method: 'GET',
+          withCredentials: true
+        })
         .success(function(log){
             $scope.log = log;
         })

@@ -99,10 +99,12 @@ angular.module('sqlexplorerFrontendApp')
         $scope.questionId = $routeParams.id;
         //IF admin get answer
         var url = '/api/questiontext/';
+        var options = {};
         if($scope.admin){
             url = '/api/question/';
+            options['withCredentials'] = true;
         }
-        $http.get(BASE_URL + url + $scope.questionId)
+        $http.get(BASE_URL + url + $scope.questionId, options)
         .success(function(question){
             $scope.db = question.db_schema.toUpperCase();
             //todo as watch?
@@ -212,10 +214,10 @@ angular.module('sqlexplorerFrontendApp')
     if($scope.question.id){
       question.id = $scope.question.id;
     }
-    $http.post(BASE_URL + '/api/question', question, {cache: false})
+    $http.post(BASE_URL + '/api/question', question, {cache: false, withCredentials: true})
         .success(function(data){
-            $scope.evaluating = false;
-      $location.search('id', data.id);
+          $scope.evaluating = false;
+          $location.search('id', data.id);
         })
     .error(function(data){
       $scope.evaluating = false;

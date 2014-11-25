@@ -1,15 +1,17 @@
+<label>search <input type="text" ng-model="query.user_name"></input></label>
 <div class="question" ng-repeat="a in log">
-<h4>{{a.activity}} : {{a.question_id}} ({{a.attempts.length}})</h4>
+  <h4>{{a.activity}} : {{a.question_id}} ({{a.attempts.length}})</h4>
     <div class="attempt" ng-repeat="attempt in a.attempts">
-        {{attempt.created}} {{attempt.ip}}
+        {{attempt.created}} [{{attempt.ip}}]
         <pre ng-bind="attempt.query" title="{{attempt.error}}"></pre>
     </div>
 </div>
-<div class="log" ng-repeat="log in logs">
+
+<div class="log" ng-repeat="log in logs|filter:query">
     <h3 ng-bind="log.user_name" ng-click="getLogDetail(log.user_id)"></h3>
-    <div ng-repeat="activity in log.activities">
+    <div ng-repeat="activity in log.activities" class="activity">
         <h4 ng-bind="activity.name"></h4>
-        <div ng-repeat="question in activity.questions">
+        <div ng-repeat="question in activity.questions" class="activity_question">
             {{question.id}} ({{question.count}})
         </div>
     </div>
