@@ -6,14 +6,16 @@
   <label>AND <input type="radio" name="andor" value="0" ng-model="keywordInclusive" /></label>
   <label>OR <input type="radio" name="andor" value="1" ng-model="keywordInclusive" /></label>
   <label><strong>database:</strong> <select ng-model="dbname" ng-options="d.OWNER as d.OWNER for d in dbs"></select></label>
-  <a ng-show="dbname != 'ALL'" ng-href="#/admin/{{dbname}}">NEW</a>
+  <a ng-show="dbname != 'ALL'" ng-href="#/admin/{{dbname}}">NEW Question</a>
+  <label><strong>Assignment:</strong> <select ng-model="assignmentId" ng-options="a.id as a.name + '/' + a.course + '(' + a.year + ') [' + a.nb + ']' for a in assignments"></select></label>
+  <button ng-click="createNewAssignment()">NEW Assignment</button>
 </div>
 
 <h3 class="clear">Questions ({{questions.length}})</h3>
 <div>
 <div ng-repeat="question in questions" class="question">
-<a ng-href="#/{{question.db_schema}}/?id={{question.id}}">#{{question.id}}</a>
-<span>{{question.text}} </span>
+<a ng-href="#/{{question.db_schema}}/?id={{question.id}}">#{{question.id}}</a> <strong ng-click="$parent.dbname=question.db_schema">{{question.db_schema}}</strong>
+<span>{{question.text}} </span> <a href="javascript:"ng-click="addQuestionToAssignment(question.id)">add to assignment</a>
 <pre>{{question.sql}}</pre>
 </div>
 </div>

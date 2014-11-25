@@ -18,7 +18,7 @@ angular
   ])
   .constant('BASE_URL', 'https://amc.ig.he-arc.ch/sqlexplorer')
   .config(function ($routeProvider, $sceProvider) {
-	$sceProvider.enabled(false);
+    $sceProvider.enabled(false);
     $routeProvider
     .when('/admin/db/:db?', {
       templateUrl: 'views/admin/database.html',
@@ -35,6 +35,10 @@ angular
     .when('/admin/questions/:db?', {
       templateUrl: 'views/admin/questions.html',
       controller: 'AdminQuestionsCtrl'
+    })
+    .when('/admin/assignments/:id?', {
+      templateUrl: 'views/admin/assignments.html',
+      controller: 'AdminAssignmentsCtrl'
     })
     .when('/admin/:db', {
       templateUrl: 'views/main.html',

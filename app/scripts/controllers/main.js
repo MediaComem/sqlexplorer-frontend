@@ -167,6 +167,7 @@ angular.module('sqlexplorerFrontendApp')
         .success(function(data){
             var history = {sql: $scope.question.sql};
             $scope.results = data;
+            $scope.currentPage = 0;
             if(data.error){
                 $scope.error = data.error;
                 history.error = data.error;

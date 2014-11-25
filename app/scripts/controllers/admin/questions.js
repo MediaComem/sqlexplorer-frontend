@@ -8,7 +8,7 @@
  * Controller of the sqlexplorerFrontendApp
  */
 angular.module('sqlexplorerFrontendApp')
-  .controller('AdminQuestionsCtrl', function ($scope, $http, BASE_URL, $routeParams) {
+  .controller('AdminQuestionsCtrl', function ($scope, $http, BASE_URL, $routeParams, $window) {
       $http({
         url: BASE_URL + '/api/tags',
         method: 'GET',
@@ -22,8 +22,15 @@ angular.module('sqlexplorerFrontendApp')
       .success(function(dbs){
         dbs.unshift({OWNER: 'ALL'});
         $scope.dbs = dbs;
-        
-      })
+      });
+      
+      function updateAssignmentList(){
+          $http.get(BASE_URL + '/api/assignment/list', {withCredentials: true})
+          .success(function(assignments){
+            $scope.assignments = assignments;
+          });
+      }
+      updateAssignmentList();
       
       $scope.dbname = 'ALL';
       if($routeParams.db){
@@ -43,6 +50,27 @@ angular.module('sqlexplorerFrontendApp')
         }else{
           $scope.selectedKeywords.push(keyword);
         }
+      };
+      
+      $scope.createNewAssignment = function(){
+        var name = $window.prompt('Name');
+        if(!name) return;
+        var year =  $window.prompt('Year');
+        if(!year) return;
+        var course = $window.prompt('Course');
+        if(!course) return;
+        $http.post(BASE_URL + '/api/assignment', {name: name, year: year, course: course}, {cache: false, withCredentials: true})
+        .success(function(res){
+          updateAssignmentList();
+          $scope.assignmentId = res.id;
+        });
+      };
+      
+      $scope.addQuestionToAssignment = function(questionId){
+        $http.post(BASE_URL + '/api/assignment/' + $scope.assignmentId + '/question', {questionId: questionId}, {cache: false, withCredentials: true})
+        .success(function(){
+          updateAssignmentList();
+        });
       };
 
       $scope.$watch('[selectedKeywords, keywordInclusive, dbname]', function(){
