@@ -1,4 +1,5 @@
 <label><strong>Assignment:</strong> <select ng-model="assignmentId" ng-options="a.id as a.name + '/' + a.course + '(' + a.year + ') [' + a.nb + ']' for a in assignments"></select></label>
+<a ng-href="https://amc.ig.he-arc.ch/sqlexplorer/api/scorm/{{assignmentId}}">EXPORT SCORM</a>
 
 <h3 class="clear">Questions ({{questions.length}})</h3>
 <div>
