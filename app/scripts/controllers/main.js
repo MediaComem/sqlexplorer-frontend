@@ -38,11 +38,11 @@ function removeNL(s) {
     }
   return r;
 }
- 
+
 angular.module('sqlexplorerFrontendApp')
 .controller('MainCtrl', function ($scope, $http, $routeParams, $location, $window, $q,
              $timeout, localStorageService, admin, BASE_URL) {
-    
+
     $scope.history = [];
     $scope.historyLimit = true;
     $scope.currentPage = 0;
@@ -50,7 +50,7 @@ angular.module('sqlexplorerFrontendApp')
     $scope.numberOfPages = function(){
         return $scope.results && $scope.results.content && Math.ceil($scope.results.content.length/$scope.pageSize) || 0;
     };
-  
+
     $scope.editorOptions = {
     lineNumbers: true,
     mode:  'text/x-oracle',
@@ -62,7 +62,7 @@ angular.module('sqlexplorerFrontendApp')
             }
         }
     };
-  
+
     $scope.admin = admin;
     if($routeParams.db){
         $scope.db = $routeParams.db.toUpperCase();
@@ -87,14 +87,14 @@ angular.module('sqlexplorerFrontendApp')
               $scope.passed = true;
             }
           } else if(new Date().getTime() - start < 3000){
-            $timeout(checkScormAPI, 200); 
+            $timeout(checkScormAPI, 200);
           }else{
             alert('no scorm api connection!');
           }
         };
         checkScormAPI();
     }
-    
+
     if($routeParams.id){
         $scope.questionId = $routeParams.id;
         //IF admin get answer
@@ -116,11 +116,11 @@ angular.module('sqlexplorerFrontendApp')
             console.log(err);
         });
     }
-    
+
   $scope.question = {
     sql: ''
   };
-    
+
   $scope.format = function(){
     $http.post('https://amc.ig.he-arc.ch/sqlformat/api/v1/format', {
       sql: $scope.question.sql,
@@ -140,20 +140,20 @@ angular.module('sqlexplorerFrontendApp')
         $scope.question.sql = data.result;
     });
   };
-    
+
     $scope.evaluate = function(){
         var timeout = $q.defer(),
             timedOut = false;
-  
+
         $scope.results = [];
         $scope.error = '';
         $scope.evaluating = true;
-        
+
         $timeout(function(){
           timedOut = true;
           timeout.resolve();
         }, 10000);
-        
+
         var data = {sql:$scope.question.sql, db:$scope.db};
         if($scope.questionId){
             data.id = $scope.questionId;
@@ -162,7 +162,7 @@ angular.module('sqlexplorerFrontendApp')
           data.user_id = doLMSGetValue('cmi.core.student_id');
           data.user_name = doLMSGetValue('cmi.core.student_name');
         }
-        
+
         $http.post(BASE_URL + '/api/evaluate', data, {cache: false, timeout: timeout.promise})
         .success(function(data){
             var history = {sql: $scope.question.sql};
@@ -177,8 +177,9 @@ angular.module('sqlexplorerFrontendApp')
             }
             if(scorm_api){
               //save interaction only has a range from 0-255
-              doLMSSetValue('cmi.interactions.'+ 0 +'.student_response', removeNL(history.sql).substring(0,255));
-              doLMSSetValue('cmi.interactions.'+ 0 +'.result', data.correct ? 'correct' : 'wrong');
+              // cmi suff is broken in moodle >2.8
+              //doLMSSetValue('cmi.interactions.'+ 0 +'.student_response', removeNL(history.sql).substring(0,255));
+              //doLMSSetValue('cmi.interactions.'+ 0 +'.result', data.correct ? 'correct' : 'wrong');
               if(data.correct){
                   doLMSSetValue('cmi.core.score.raw', 1);
                   doLMSSetValue('cmi.core.lesson_status','passed');
@@ -197,7 +198,7 @@ angular.module('sqlexplorerFrontendApp')
 
             //could be moved to watch
             localStorageService.set($scope.db, $scope.history);
-        
+
         })
         .error(function(data){
           if (timedOut) {
@@ -209,7 +210,7 @@ angular.module('sqlexplorerFrontendApp')
           }
         });
     };
-  
+
   $scope.upsert = function(){
     var question = {sql:$scope.question.sql, text:$scope.question.text, db_schema: $scope.db};
     if($scope.question.id){
@@ -223,24 +224,24 @@ angular.module('sqlexplorerFrontendApp')
     .error(function(data){
       $scope.evaluating = false;
     });
-  
+
   };
-  
+
   $scope.navToNewQuestion = function(){
     $location.search('id', undefined);
   };
-  
+
   $scope.isNum = function(a){
     return !isNaN(a);
   };
-  
+
   $scope.isNull = function(a){
     return a === '(NULL)';
   };
-  
+
   $scope.clearHistory = function(){
     localStorageService.remove($scope.db);
     $scope.history = [];
   };
-    
+
 });
