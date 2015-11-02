@@ -35,7 +35,7 @@
 	<div class="output-box">
 	  <table class="output">
 	  <tr>
-		<th ng-repeat="v in results.headers" ng-bind="v"></th>
+		<th ng-repeat="v in results.headers track by $index" ng-bind="v"></th>
 	  </tr>
 	  <tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
 		<td ng-repeat="c in row track by $index" ng-bind="c" ng-class="{'right': isNum(c) || isNull(c)}"></td>
