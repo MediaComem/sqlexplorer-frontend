@@ -14,10 +14,10 @@ angular.module('sqlexplorerFrontendApp')
         method: 'GET',
         withCredentials: true
       })
-      .success(function(logs){
+      .then(function(logs){
           $scope.logs = logs;
       })
-      .error(function(err){
+      .catch(function(err){
           //TODO: handle failure
           console.log(err);
       });
@@ -29,10 +29,10 @@ angular.module('sqlexplorerFrontendApp')
           method: 'GET',
           withCredentials: true
         })
-        .success(function(log){
+        .then(function(log){
             $scope.log = log;
         })
-        .error(function(err){
+        .catch(function(err){
             //TODO: handle failure
             console.log(err);
         });

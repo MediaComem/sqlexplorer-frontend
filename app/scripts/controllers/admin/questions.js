@@ -14,19 +14,19 @@ angular.module('sqlexplorerFrontendApp')
         method: 'GET',
         withCredentials: true
       })
-      .success(function(tags){
+      .then(function(tags){
         $scope.tags = tags;
-      })
+      });
       
       $http.get(BASE_URL + '/api/db/list')
-      .success(function(dbs){
+      .then(function(dbs){
         dbs.unshift({OWNER: 'ALL'});
         $scope.dbs = dbs;
       });
       
       function updateAssignmentList(){
           $http.get(BASE_URL + '/api/assignment/list', {withCredentials: true})
-          .success(function(assignments){
+          .then(function(assignments){
             $scope.assignments = assignments;
           });
       }
@@ -42,7 +42,7 @@ angular.module('sqlexplorerFrontendApp')
       $scope.keywordInclusive = 0;
       $scope.isKeywordSelected = function(keyword){
         return $scope.selectedKeywords.indexOf(keyword) >= 0;
-      }
+      };
 
       $scope.toggleKeyword = function(keyword){
         if($scope.isKeywordSelected(keyword)){
@@ -60,7 +60,7 @@ angular.module('sqlexplorerFrontendApp')
         var course = $window.prompt('Course');
         if(!course) return;
         $http.post(BASE_URL + '/api/assignment', {name: name, year: year, course: course}, {cache: false, withCredentials: true})
-        .success(function(res){
+        .then(function(res){
           updateAssignmentList();
           $scope.assignmentId = res.id;
         });
@@ -68,14 +68,14 @@ angular.module('sqlexplorerFrontendApp')
       
       $scope.addQuestionToAssignment = function(questionId){
         $http.post(BASE_URL + '/api/assignment/' + $scope.assignmentId + '/question', {questionId: questionId}, {cache: false, withCredentials: true})
-        .success(function(){
+        .then(function(){
           updateAssignmentList();
         });
       };
 
       $scope.$watch('[selectedKeywords, keywordInclusive, dbname]', function(){
         $http.post(BASE_URL + '/api/questions', {keywords: $scope.selectedKeywords, inclusive: $scope.keywordInclusive, dbname: $scope.dbname}, {cache: false, withCredentials: true})
-        .success(function(questions){
+        .then(function(questions){
           $scope.questions = questions;
         });
       }, true);
