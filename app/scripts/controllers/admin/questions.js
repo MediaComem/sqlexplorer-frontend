@@ -14,20 +14,23 @@ angular.module('sqlexplorerFrontendApp')
         method: 'GET',
         withCredentials: true
       })
-      .then(function(tags){
-        $scope.tags = tags;
+      .then(function(result){
+        console.log('/api/tags result', result);
+        $scope.tags = result.data;
       });
       
       $http.get(BASE_URL + '/api/db/list')
-      .then(function(dbs){
-        dbs.unshift({OWNER: 'ALL'});
-        $scope.dbs = dbs;
+      .then(function(result){
+        console.log('/api/db/list result', result);
+        result.data.unshift({OWNER: 'ALL'});
+        $scope.dbs = result.data;
       });
       
       function updateAssignmentList(){
           $http.get(BASE_URL + '/api/assignment/list', {withCredentials: true})
-          .then(function(assignments){
-            $scope.assignments = assignments;
+          .then(function(result){
+            console.log('/api/assignment/list result', result);
+            $scope.assignments = result.data;
           });
       }
       updateAssignmentList();
@@ -75,8 +78,9 @@ angular.module('sqlexplorerFrontendApp')
 
       $scope.$watch('[selectedKeywords, keywordInclusive, dbname]', function(){
         $http.post(BASE_URL + '/api/questions', {keywords: $scope.selectedKeywords, inclusive: $scope.keywordInclusive, dbname: $scope.dbname}, {cache: false, withCredentials: true})
-        .then(function(questions){
-          $scope.questions = questions;
+        .then(function(result){
+          console.log('/api/questions result', result);
+          $scope.questions = result.data;
         });
       }, true);
   });

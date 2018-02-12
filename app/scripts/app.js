@@ -18,7 +18,7 @@ angular
   ])
   // .constant('BASE_URL', 'https://amc.ig.he-arc.ch/sqlexplorer')
   .constant('BASE_URL', 'http://localhost:3000')
-  .config(function ($routeProvider, $sceProvider) {
+  .config(function ($routeProvider, $sceProvider, $locationProvider) {
     $sceProvider.enabled(false);
     $routeProvider
     .when('/admin/db/:db?', {
@@ -62,4 +62,6 @@ angular
     .otherwise({
       redirectTo: '/HR'
     });
+
+    $locationProvider.hashPrefix('');
   });

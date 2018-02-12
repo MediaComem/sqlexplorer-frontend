@@ -47,6 +47,8 @@ angular.module('sqlexplorerFrontendApp')
     $scope.historyLimit = true;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
+    $scope.baseUrl = BASE_URL;
+
     $scope.numberOfPages = function() {
       return $scope.results && $scope.results.content && Math.ceil($scope.results.content.length / $scope.pageSize) || 0;
     };
@@ -105,11 +107,11 @@ angular.module('sqlexplorerFrontendApp')
         options['withCredentials'] = true;
       }
       $http.get(BASE_URL + url + $scope.questionId, options)
-        .then(function(question) {
-          $scope.db = question.db_schema.toUpperCase();
+        .then(function(result) {
+          $scope.db = result.data.db_schema.toUpperCase();
           //todo as watch?
           $scope.history = localStorageService.get($scope.db) || [];
-          $scope.question = question;
+          $scope.question = result.data;
         })
         .catch(function(err) {
           //TODO: handle failure
@@ -137,8 +139,7 @@ angular.module('sqlexplorerFrontendApp')
           }
         })
         .then(function(res) {
-          console.log(res);
-          $scope.question.sql = res.data.result;
+          if (res.data.result !== 'undefined') { $scope.question.sql = res.data.result; }
         })
         .catch(function(err) {
           console.error(err);
@@ -168,27 +169,28 @@ angular.module('sqlexplorerFrontendApp')
       }
 
       $http.post(BASE_URL + '/api/evaluate', data, { cache: false, timeout: timeout.promise })
-        .then(function(data) {
+        .then(function(result) {
+          console.log('/api/evaluate result', result);
           var history = { sql: $scope.question.sql };
-          $scope.results = data;
+          $scope.results = result.data;
           $scope.currentPage = 0;
-          if (data.error) {
-            $scope.error = data.error;
-            history.error = data.error;
+          if (result.data.error) {
+            $scope.error = result.data.error;
+            history.error = result.data.error;
           }
-          if (data.hasOwnProperty('numrows')) {
-            history.result = data.numrows;
+          if (result.data.hasOwnProperty('numrows')) {
+            history.result = result.data.numrows;
           }
           if (scorm_api) {
             //save interaction only has a range from 0-255
             // cmi suff is broken in moodle >2.8
             //doLMSSetValue('cmi.interactions.'+ 0 +'.student_response', removeNL(history.sql).substring(0,255));
             //doLMSSetValue('cmi.interactions.'+ 0 +'.result', data.correct ? 'correct' : 'wrong');
-            if (data.correct) {
+            if (result.data.correct) {
               doLMSSetValue('cmi.core.score.raw', 1);
               doLMSSetValue('cmi.core.lesson_status', 'passed');
               //questionPassed
-              $scope.passed = { sql: history.sql, answer: data.answer };
+              $scope.passed = { sql: history.sql, answer: result.data.answer };
             } else {
               doLMSSetValue('cmi.core.score.raw', 0);
               doLMSSetValue('cmi.core.lesson_status', 'failed');
