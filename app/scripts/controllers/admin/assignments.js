@@ -9,6 +9,8 @@
  */
 angular.module('sqlexplorerFrontendApp')
   .controller('AdminAssignmentsCtrl', function($scope, $http, BASE_URL, $routeParams) {
+    $scope.baseUrl = BASE_URL;
+    
     $http.get(BASE_URL + '/api/assignment/list', { withCredentials: true })
       .then(function(assignments) {
         console.log(assignments);
