@@ -43,6 +43,7 @@ angular.module('sqlexplorerFrontendApp')
   .controller('MainCtrl', function($scope, $http, $routeParams, $location, $window, $q,
     $timeout, localStorageService, admin, BASE_URL) {
 
+    console.log(BASE_URL);
     $scope.history = [];
     $scope.historyLimit = true;
     $scope.currentPage = 0;

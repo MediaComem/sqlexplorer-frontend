@@ -310,6 +310,25 @@ module.exports = function (grunt) {
       }
     },
 
+    ngconstant: {
+      options: {
+        name: 'sqlexplorerFrontendApp',
+        deps: false,
+        dest: './app/scripts/config.js',
+      },
+      prod: {
+        constants: './app/config/env.prod.json'
+      },
+      dev: {
+        constants: './app/config/env.dev.json'
+      },
+      blabla: {
+        constants: {
+          BLA: "bla"
+        }
+      }
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -374,13 +393,12 @@ module.exports = function (grunt) {
     }
   });
 
-
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
-
     grunt.task.run([
+      'ngconstant:dev',
       'clean:server',
       'wiredep',
       'concurrent:server',
@@ -405,6 +423,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'ngconstant:prod',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',

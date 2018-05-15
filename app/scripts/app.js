@@ -16,8 +16,6 @@ angular
     'ui.codemirror',
     'LocalStorageModule'
   ])
-  // .constant('BASE_URL', 'https://amc.ig.he-arc.ch/sqlexplorer')
-  .constant('BASE_URL', 'http://localhost:3000')
   .config(function ($routeProvider, $sceProvider, $locationProvider) {
     $sceProvider.enabled(false);
     $routeProvider
