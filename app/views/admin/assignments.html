@@ -5,7 +5,7 @@
 <div>
 <div ng-repeat="question in questions" class="question">
 <h4>Question {{$index + 1}}</h4>
-<a ng-href="#/{{question.db_schema}}/?id={{question.id}}">#{{question.id}}</a> <strong ng-click="$parent.dbname=question.db_schema">{{question.db_schema}}</strong>
+<a ng-href="#/{{question.db_schema | lowercase}}/?id={{question.id}}">#{{question.id}}</a> <strong ng-click="$parent.dbname=question.db_schema">{{question.db_schema}}</strong>
 <span>{{question.text}} </span> <a href="javascript:"ng-click="addQuestionToAssignment(question.id)">add to assignment</a>
 <pre>{{question.sql}}</pre>
 </div>
