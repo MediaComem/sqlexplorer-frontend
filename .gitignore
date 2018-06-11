@@ -4,4 +4,4 @@ dist
 .sass-cache
 bower_components
 .vscode
-app/script/config.js
+app/scripts/config.js
