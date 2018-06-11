@@ -321,11 +321,6 @@ module.exports = function (grunt) {
       },
       dev: {
         constants: './app/config/env.dev.json'
-      },
-      blabla: {
-        constants: {
-          BLA: "bla"
-        }
       }
     },
 
