@@ -1,64 +1,117 @@
-<div class="question">
-	<div ng-show="error" ng-bind="error" class="error"></div>
-	<div ng-if="!admin" ng-bind="question.text"></div>
-	<textarea ng-if="admin" ng-model="question.text"></textarea>
-	<div ng-if="question.text">Schéma: <span ng-bind="question.schema"></span></div>
-	<button ng-click="format()">format</button> <button ng-click="evaluate()" ng-disabled="evaluating || passed">execute</button>
-	<span ng-if="admin">admin: <button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
-		<button ng-if="questionId" ng-click="navToNewQuestion()">new</button></span>
-</div>
-<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="question.sql" ng-hide="passed"></ui-codemirror>
-<div ng-if="passed">
-	<h2>Question terminée<h2>
-	<div ng-if="passed.sql">
-		<h3>Votre réponse</h3>
-		<pre ng-bind="passed.sql"></pre>
-		<h3>La réponse</h3>
-		<pre ng-bind="passed.answer"></pre>
-		<a href="mailto:boris.fritscher@he-arc.ch">Signaler une erreur.</a>
+<div class="padding">
+	<div id="brand">
+		<span>SQL Explorer</span>
+		<span ng-if="user">Connecté en tant que <strong>{{ ::user.firstname }} {{ ::user.lastname }}</strong></span>
+	</div>
+	<div class="assignment-header" ng-if="user && assignment">
+		<h1>{{ ::assignment.name }}</h1>
+		<h1>Résultat : {{ user.score || 0 }}/{{ ::assignment.questions.length }}</h2>
 	</div>
 
-</div>
-
-
-<div ng-show="results.numrows">
+	<div class="assignment-details" ng-if="isLti">
+		<ul>
+			<li ng-repeat="question in assignment.questions" ng-class="question.active ? 'active' : ''" ng-click="setCurrentQuestion($index)"
+			 class="question-list-item">
+				<div>
+					<span>Q{{ ::$index + 1 }}</span>
+					<span class="state" ng-class="question.state"></span>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div class="question">
+		<h2 ng-if="!admin">{{ question.text }}</h2>
+		<textarea ng-if="admin" ng-model="question.text"></textarea>
+		<div ng-if="question.text" class="question">Schéma:
+			<span class="schema">{{ question.schema }}</span>
+		</div>
+		<div ng-show="error" class="error">
+			<p>Erreur :</p>
+			<p>{{ error }}</p>
+		</div>
+		<div ng-hide="passed">
+			<button ng-click="format()">format</button>
+			<button ng-click="evaluate()" ng-disabled="evaluating || passed">execute</button>
+		</div>
+		<span ng-if="admin">admin:
+			<button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
+			<button ng-if="questionId" ng-click="navToNewQuestion()">new</button>
+		</span>
+	</div>
 	<div>
-		{{results.numrows}}
-		<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-          Previous
-		</button>
-		{{currentPage+1}}/{{numberOfPages()}}
-		<button ng-disabled="currentPage >= results.content.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-          Next
-		</button>
+		<ui-codemirror ui-codemirror-opts="editorOptions" ng-model="question.sql" ng-hide="passed"></ui-codemirror>
 	</div>
-	<div class="output-box">
-	  <table class="output">
-	  <tr>
-		<th ng-repeat="v in results.headers track by $index" ng-bind="v"></th>
-	  </tr>
-	  <tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
-		<td ng-repeat="c in row track by $index" ng-bind="c" ng-class="{'right': isNum(c) || isNull(c)}"></td>
-	  </tr>
-	  </table>
+	<div ng-if="passed">
+		<div class="success-message">
+			<h3>Question terminée</h3>
+			<div ng-if="passed.sql || passed.history[0]">
+				<h4>Votre réponse</h4>
+				<pre>{{ passed.sql || passed.history[0].sql }}</pre>
+			</div>
+			<div ng-if="passed.answer">
+				<h4>La réponse</h4>
+				<pre>{{ passed.answer }}</pre>
+				<a href="mailto:comem.media@gmail.com?subject=SQL Explorer - Problème avec la question n°{{question.id}}">Signaler une erreur.</a>
+			</div>
+		</div>
+	</div>
+
+
+	<div ng-show="results.numrows && !passed" id="results">
+		<div>
+			{{results.numrows}}
+			<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+				Previous
+			</button>
+			{{currentPage+1}}/{{numberOfPages()}}
+			<button ng-disabled="currentPage >= results.content.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+				Next
+			</button>
+		</div>
+		<div class="output-box">
+			<table class="output">
+				<tr>
+					<th ng-repeat="title in results.headers track by $index">{{ title }}</th>
+				</tr>
+				<tr ng-repeat="row in results.content | startFrom:currentPage*pageSize | limitTo: pageSize">
+					<td ng-repeat="column in row track by $index" ng-class="{'right': isNum(column) || isNull(column)}">{{ column }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="history" ng-class="{'limit': historyLimit}">
+		<h3 ng-click="historyLimit = ! historyLimit">History
+			<span ng-if="!isLti" class="clearHistory" ng-click="clearHistory()">clear</span>
+		</h3>
+		<table>
+			<tr ng-repeat="r in history" ng-class="{'error': (r.result <=0 || !r.is_correct)}" ng-click="question.sql = r.sql">
+				<td>{{ history.length - $index }}</td>
+				<td>
+					<pre title="{{r.result || r.error}}">{{ r.sql }}</pre>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="schema">
+		<h3>Schema</h3>
+		<img ng-src="{{baseUrl}}/schema_pics/{{db | lowercase}}.png" my-schema-pic />
+
+		<div class="schemaPic">
+			<div></div>
+		</div>
+	</div>
+
+	<div id="questionId">{{ questionId }}</div>
+	<div id="footer">
+		<span id="github">
+			<a href="https://github.com/MediaComem?utf8=%E2%9C%93&q=sqlexplorer&type=&language=" target="blank"><img src="../images/github-light.png" alt="Github Logo"></a>
+		</span>
+		<span>
+			Développé au
+			<a href="https://heig-vd.ch/rad/instituts/mei/" target="blank">MEI</a>, sur une base de
+			<a href="https://www.fritscher.ch/" target="blank">Boris Fritcher</a>.
+		</span>
 	</div>
 </div>
-
-<h3 ng-click="historyLimit = ! historyLimit" >History <span class="clearHistory" ng-click="clearHistory()">clear</span></h3>
-<div class="history" ng-class="{'limit': historyLimit}">
-	<table>
-	<tr ng-repeat="r in history" ng-class="{'error': !(r.result >=0)}" ng-click="question.sql = r.sql">
-		<td ng-bind="history.length - $index"></td>
-		<td><pre ng-bind="r.sql" title="{{r.result || r.error}}"></pre></td>
-	</tr>
-	<table>
-</div>
-
-<h3>Schema</h3>
-<img ng-src="{{baseUrl}}/schema_pics/{{db | lowercase}}.png" my-schema-pic />
-
-<div class="schemaPic">
-	<div ></div>
-</div>
-
-<div id="questionId" ng-bind="questionId"></div>

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "normalize.css": "~3.0.2",
-    "angular": "~1.2.0",
+    "angular": "~1.6.0",
     "json3": "~3.3.1",
     "es5-shim": "~3.1.0",
     "angular-sanitize": "~1.2.0",
@@ -21,7 +21,7 @@
   },
   "appPath": "app",
   "resolutions": {
-    "angular": "^1",
+    "angular": "^1.7.2",
     "codemirror": "~4.6.0"
   }
 }

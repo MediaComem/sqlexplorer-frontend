@@ -39,6 +39,8 @@
   "scripts": {
     "test": "grunt test",
     "build": "grunt build",
-    "start": "grunt serve"
+    "build:staging": "grunt build:staging",
+    "start": "grunt serve",
+    "deploy:staging": "deploy staging"
   }
 }

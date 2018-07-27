@@ -7,7 +7,7 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
@@ -74,13 +74,13 @@ module.exports = function (grunt) {
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
+          middleware: function(connect) {
             return [
-			  function(req, res, next) {
-				res.setHeader('Access-Control-Allow-Origin', '*');
-				res.setHeader('Access-Control-Allow-Methods', '*');
-				next();
-			  },
+              function(req, res, next) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', '*');
+                next();
+              },
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -94,7 +94,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           port: 9001,
-          middleware: function (connect) {
+          middleware: function(connect) {
             return [
               connect.static('.tmp'),
               connect.static('test'),
@@ -169,7 +169,7 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
-        ignorePath:  /\.\.\//
+        ignorePath: /\.\.\//
       }
     },
 
@@ -209,7 +209,7 @@ module.exports = function (grunt) {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
+        assetsDirs: ['<%= yeoman.dist %>', '<%= yeoman.dist %>/images']
       }
     },
 
@@ -285,7 +285,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          '<%= yeoman.dist %>/index.html':'<%= yeoman.dist %>/index.html'
+          '<%= yeoman.dist %>/index.html': '<%= yeoman.dist %>/index.html'
         }
       }
     },
@@ -321,6 +321,9 @@ module.exports = function (grunt) {
       },
       dev: {
         constants: './app/config/env.dev.json'
+      },
+      staging: {
+        constants: './app/config/env.staging.json'
       }
     },
 
@@ -353,15 +356,15 @@ module.exports = function (grunt) {
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
       },
-	  deploy:{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.dist %>',
-          dest: '\\\\amc.ig.he-arc.ch\\boris\\sqlexplorer-backend\\public',
-          src: [
-            '**'
-          ]
-        }
+      deploy: {
+        expand: true,
+        dot: true,
+        cwd: '<%= yeoman.dist %>',
+        dest: '\\\\amc.ig.he-arc.ch\\boris\\sqlexplorer-backend\\public',
+        src: [
+          '**'
+        ]
+      }
     },
 
     // Run some tasks in parallel to speed up the build process
@@ -388,7 +391,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
+  grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
@@ -403,7 +406,7 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
+  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function(target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve:' + target]);
   });
@@ -416,29 +419,34 @@ module.exports = function (grunt) {
     'karma'
   ]);
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'ngconstant:prod',
-    'wiredep',
-    'useminPrepare',
-    'concurrent:dist',
-    'autoprefixer',
-    'concat',
-    'ngAnnotate',
-    'copy:dist',
-    //'cdnify',
-    'cssmin',
-    'uglify',
-    //'filerev',
-    'usemin',
-    'processhtml',
-    'htmlmin'
-  ]);
+  grunt.registerTask('build', 'Build the app for distribution. Pass a environment parameter (prod (default) | dev) to build with the correct config', function(target) {
+    if (!target) {
+      target = 'prod';
+    }
+    grunt.task.run([
+      'clean:dist',
+      `ngconstant:${target}`,
+      'wiredep',
+      'useminPrepare',
+      'concurrent:dist',
+      'autoprefixer',
+      'concat',
+      'ngAnnotate',
+      'copy:dist',
+      //'cdnify',
+      'cssmin',
+      'uglify',
+      //'filerev',
+      'usemin',
+      'processhtml',
+      'htmlmin'
+    ])
+  });
 
   grunt.registerTask('default', [
     'newer:jshint',
     //'test',
     'build',
-	  'copy:deploy'
+    'copy:deploy'
   ]);
 };

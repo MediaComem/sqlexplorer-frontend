@@ -41,14 +41,31 @@ function removeNL(s) {
 
 angular.module('sqlexplorerFrontendApp')
   .controller('MainCtrl', function($scope, $http, $routeParams, $location, $window, $q,
-    $timeout, localStorageService, admin, BASE_URL) {
+    $timeout, localStorageService, admin, user, BASE_URL, assignment) {
 
+    var historyId;
+
+    $scope.isLti = Boolean(user) && Boolean(assignment);
     console.log(BASE_URL);
     $scope.history = [];
     $scope.historyLimit = true;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     $scope.baseUrl = BASE_URL;
+    if ($scope.isLti) {
+      $scope.user = user.data;
+      $scope.user.score = 0;
+      var assignmentData = assignment.data;
+      assignmentData.questions.map(function(question) {
+        question.active = false;
+        question.state = question.is_correct === null ? 'pending' : String(question.is_correct);
+        question.passed = question.is_correct;
+        if (question.passed) $scope.user.score++;
+        return question
+      });
+      $scope.assignment = assignmentData;
+      $scope.setCurrentQuestion = setCurrentQuestion;
+    }
 
     $scope.numberOfPages = function() {
       return $scope.results && $scope.results.content && Math.ceil($scope.results.content.length / $scope.pageSize) || 0;
@@ -62,6 +79,9 @@ angular.module('sqlexplorerFrontendApp')
       extraKeys: {
         'Ctrl-Enter': function() {
           $scope.evaluate();
+        },
+        'Shift-Alt-F': function() {
+          $scope.format();
         }
       }
     };
@@ -69,37 +89,39 @@ angular.module('sqlexplorerFrontendApp')
     $scope.admin = admin;
     if ($routeParams.db) {
       $scope.db = $routeParams.db.toUpperCase();
+      historyId = $scope.db;
       //todo as watch?
-      $scope.history = localStorageService.get($scope.db) || [];
+      $scope.history = localStorageService.get(historyId) || [];
     }
     var search = $window.location.search.split('=');
-    //from scorm frame
-    if (search.length > 1) {
-      if (isNaN(search[1])) {
-        $scope.db = search[1].toUpperCase();
-        //todo as watch?
-        $scope.history = localStorageService.get($scope.db) || [];
-      } else {
-        $routeParams.id = search[1];
-      }
-      var start = new Date().getTime();
-      var checkScormAPI = function() {
-        if (scorm_api) {
-          if (scorm_score > 0) {
-            //question passed
-            $scope.passed = true;
-          }
-        } else if (new Date().getTime() - start < 3000) {
-          $timeout(checkScormAPI, 200);
-        } else {
-          alert('no scorm api connection!');
-        }
-      };
-      checkScormAPI();
-    }
+    // //from scorm frame
+    // if (search.length > 1) {
+    //   if (isNaN(search[1])) {
+    //     $scope.db = search[1].toUpperCase();
+    //     //todo as watch?
+    //     $scope.history = localStorageService.get($scope.db) || [];
+    //   } else {
+    //     $routeParams.id = search[1];
+    //   }
+    //   var start = new Date().getTime();
+    //   var checkScormAPI = function() {
+    //     if (scorm_api) {
+    //       if (scorm_score > 0) {
+    //         //question passed
+    //         $scope.passed = true;
+    //       }
+    //     } else if (new Date().getTime() - start < 3000) {
+    //       $timeout(checkScormAPI, 200);
+    //     } else {
+    //       alert('no scorm api connection!');
+    //     }
+    //   };
+    //   checkScormAPI();
+    // }
 
     if ($routeParams.id) {
-      $scope.questionId = $routeParams.id;
+      historyId = $scope.questionId = $routeParams.id;
+      $scope.history = localStorageService.get(historyId) || [];
       //IF admin get answer
       var url = '/api/questiontext/';
       var options = {};
@@ -111,7 +133,7 @@ angular.module('sqlexplorerFrontendApp')
         .then(function(result) {
           $scope.db = result.data.db_schema.toUpperCase();
           //todo as watch?
-          $scope.history = localStorageService.get($scope.db) || [];
+          $scope.history = localStorageService.get(historyId) || [];
           $scope.question = result.data;
         })
         .catch(function(err) {
@@ -120,17 +142,22 @@ angular.module('sqlexplorerFrontendApp')
         });
     }
 
-    $scope.question = {
+    assignment ? $scope.setCurrentQuestion(0) : $scope.question = {
       sql: ''
     };
 
     $scope.format = function() {
+      if (!$scope.question.sql) {
+        $scope.error = "Format : Pas de requête à formater."
+        return;
+      }
       $http.post('https://sqlformat.org/api/v1/format', {
-        sql: $scope.question.sql,
+        sql: $scope.question.sql || "",
         reindent: 1,
         keyword_case: 'upper'
       }, {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+          withCredentials: false,
           transformRequest: function(obj) {
             var str = [];
             for (var p in obj) {
@@ -140,7 +167,7 @@ angular.module('sqlexplorerFrontendApp')
           }
         })
         .then(function(res) {
-          if (res.data.result !== 'undefined') { $scope.question.sql = res.data.result; }
+          if (res.data.result !== 'undefined') $scope.question.sql = res.data.result;
         })
         .catch(function(err) {
           console.error(err);
@@ -148,6 +175,10 @@ angular.module('sqlexplorerFrontendApp')
     };
 
     $scope.evaluate = function() {
+      if (!Boolean($scope.question.sql)) {
+        $scope.error = "Execute : Pas de requête à exécuter."
+        return;
+      }
       var timeout = $q.defer(),
         timedOut = false;
 
@@ -161,8 +192,8 @@ angular.module('sqlexplorerFrontendApp')
       }, 10000);
 
       var data = { sql: $scope.question.sql, db: $scope.db };
-      if ($scope.questionId) {
-        data.id = $scope.questionId;
+      if ($scope.questionId || $scope.question.id) {
+        data.id = $scope.questionId || $scope.question.id;
       }
       if (scorm_api) {
         data.user_id = doLMSGetValue('cmi.core.student_id');
@@ -196,16 +227,30 @@ angular.module('sqlexplorerFrontendApp')
               doLMSSetValue('cmi.core.score.raw', 0);
               doLMSSetValue('cmi.core.lesson_status', 'failed');
             }
+          } else {
+            if ($scope.isLti) {
+              $scope.question.is_correct = result.data.correct;
+              if (result.data.correct) {
+                $scope.passed = $scope.question.passed = { sql: history.sql, answer: result.data.answer };
+                $scope.question.state = String($scope.question.is_correct);
+                $scope.user && $scope.user.score++;
+              } else {
+                $scope.question.state = String($scope.question.is_correct);
+              }
+              saveResponse($scope.question, result);
+            } else {
+              $scope.passed = result.data.correct;
+            }
           }
-
 
           $scope.evaluating = false;
 
-          $scope.history.unshift(history);
+          if (!$scope.isLti) {
+            $scope.history.unshift(history);
 
-          //could be moved to watch
-          localStorageService.set($scope.db, $scope.history);
-
+            //could be moved to watch
+            localStorageService.set(historyId, $scope.history);
+          }
         })
         .catch(function(data) {
           if (timedOut) {
@@ -213,7 +258,7 @@ angular.module('sqlexplorerFrontendApp')
             $scope.error = 'unable to contact server';
           } else {
             $scope.evaluating = false;
-            $scope.error = data;
+            $scope.error = data.status + ' : ' + data.data;
           }
         });
     };
@@ -247,8 +292,46 @@ angular.module('sqlexplorerFrontendApp')
     };
 
     $scope.clearHistory = function() {
-      localStorageService.remove($scope.db);
+      localStorageService.remove(historyId);
       $scope.history = [];
     };
 
+    console.log($scope);
+
+    function saveResponse(question, result) {
+      var responseData = {
+        sql: question.sql,
+        isCorrect: result.data.correct
+      };
+      if (responseData.isCorrect) responseData.userScore = $scope.user.score / $scope.assignment.questions.length;
+
+      $http.post(BASE_URL + '/lti/assignment/' + $scope.assignment.id + '/question/' + question.id + '/response', responseData)
+        .then(function(result) {
+          question.history.unshift(result.data.history);
+        })
+        .catch(console.log);
+    }
+
+    function loadHistory(question) {
+      if (question.history === undefined) {
+        $http.get(BASE_URL + '/lti/assignment/' + $scope.assignment.id + '/question/' + question.id + '/history')
+          .then(function(result) {
+            $scope.history = question.history = result.data;
+          })
+          .catch(console.log);
+      } else {
+        $scope.history = question.history;
+      }
+    }
+
+    function setCurrentQuestion(index) {
+      $scope.question && ($scope.question.active = false);
+      $scope.question = $scope.assignment.questions[index];
+      console.log('setting question to index', index);
+      $scope.question.active = true;
+      $scope.db = $scope.question.db_schema.toLowerCase();
+      $scope.passed = $scope.question.passed ? $scope.question : undefined;
+      loadHistory($scope.question);
+      $scope.error = null;
+    }
   });
