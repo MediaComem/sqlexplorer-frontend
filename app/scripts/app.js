@@ -71,7 +71,7 @@ angular
         }
       })
       .otherwise({
-        redirectTo: '/hr'
+        redirectTo: '/production'
       });
 
     $locationProvider.hashPrefix('');

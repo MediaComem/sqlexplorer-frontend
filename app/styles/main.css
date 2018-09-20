@@ -254,7 +254,8 @@ a.db {
   margin: 5px;
   text-decoration: none;
   color: #333;
-  text-align: right
+  text-align: right;
+  background-repeat: no-repeat;
 }
 
 .db>div {
