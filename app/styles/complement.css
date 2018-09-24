@@ -96,6 +96,10 @@ button[disabled] {
   border-color: rgba(0, 106, 195, 0.5);
 }
 
+div.schema {
+  margin-bottom: 32px;
+}
+
 #footer {
   background-color: gainsboro;
   padding-top: 16px;
@@ -105,7 +109,10 @@ button[disabled] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 32px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 #footer a {
