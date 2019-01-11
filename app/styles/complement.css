@@ -58,6 +58,13 @@
   padding-bottom: 8px;
 }
 
+button.solution-button {
+  margin-left: 18px;
+  color: rgb(3, 145, 97);
+  background-color: rgb(242, 255, 251);
+  border: solid rgb(3, 145, 97) 1px;
+}
+
 #results {
   margin-top: 32px;
 }

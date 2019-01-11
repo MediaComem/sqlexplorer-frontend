@@ -65,6 +65,7 @@ angular.module('sqlexplorerFrontendApp')
       });
       $scope.assignment = assignmentData;
       $scope.setCurrentQuestion = setCurrentQuestion;
+      if ($scope.user.isInstructor) $scope.getSolution = getSolution;
     }
 
     $scope.numberOfPages = function() {
@@ -127,7 +128,7 @@ angular.module('sqlexplorerFrontendApp')
       var options = {};
       if ($scope.admin) {
         url = '/api/question/';
-        options['withCredentials'] = true;
+        options[ 'withCredentials' ] = true;
       }
       $http.get(BASE_URL + url + $scope.questionId, options)
         .then(function(result) {
@@ -161,7 +162,7 @@ angular.module('sqlexplorerFrontendApp')
           transformRequest: function(obj) {
             var str = [];
             for (var p in obj) {
-              str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+              str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[ p ]));
             }
             return str.join('&');
           }
@@ -298,6 +299,15 @@ angular.module('sqlexplorerFrontendApp')
 
     console.log($scope);
 
+    function getSolution(questionId) {
+      $http.get(BASE_URL + '/lti/assignment/' + $scope.assignment.id + '/question/' + questionId + '/solution')
+        .then(function(result) {
+          console.log(result);
+          $scope.question.sql = result.data;
+        })
+        .catch(console.log);
+    }
+
     function saveResponse(question, result) {
       var responseData = {
         sql: question.sql,
@@ -326,7 +336,7 @@ angular.module('sqlexplorerFrontendApp')
 
     function setCurrentQuestion(index) {
       $scope.question && ($scope.question.active = false);
-      $scope.question = $scope.assignment.questions[index];
+      $scope.question = $scope.assignment.questions[ index ];
       console.log('setting question to index', index);
       $scope.question.active = true;
       $scope.db = $scope.question.db_schema.toLowerCase();

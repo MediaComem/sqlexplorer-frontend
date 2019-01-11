@@ -32,6 +32,7 @@
 		<div ng-hide="passed">
 			<button ng-click="format()">format</button>
 			<button ng-click="evaluate()" ng-disabled="evaluating || passed">execute</button>
+			<button ng-show="user.isInstructor" ng-click="getSolution(question.id)" class="solution-button">solution</button>
 		</div>
 		<span ng-if="admin">admin:
 			<button ng-bind="questionId ? 'update' : 'create'" ng-click="upsert()"></button>
